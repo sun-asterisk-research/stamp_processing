@@ -4,9 +4,9 @@ import torch
 from functools import partial
 from typing import List
 
-from preprocess import letterbox, process_image, create_batch
-from postprocess import non_max_suppression, scale_coords
-from utils import select_device, load_torch_script_model
+from stamp_detector.preprocess import letterbox, process_image, create_batch
+from stamp_detector.postprocess import non_max_suppression, scale_coords
+from stamp_detector.utils import select_device, load_torch_script_model
 
 
 
@@ -22,15 +22,16 @@ class StampDetector:
         
         self.process_func_ = partial(process_image, device=self.device)
 
-    def predict(self, image_list: List[np.array]):
+    def predict(self, image_list: List[np.ndarray]):
         """
         Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
-
+        Each element in the list is a numpy array of shape N x 4
+        
         Args:
             image_list (List[np.array]): input images
 
         Returns:
-            [List[np.array]]: output bounding boxes
+            [List[np.ndarray]]: output bounding boxes
         """
         batches, indices = create_batch(image_list, set(list(x.shape for x in image_list)))
         predictions = []
