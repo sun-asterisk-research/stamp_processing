@@ -1,0 +1,60 @@
+checkout:
+  depth: 1
+
+stages:
+  - ci
+  - test
+
+jobs:
+  flake8:
+    stage: ci
+    image: python:3.7
+    script:
+      - pip3 install flake8==3.9.0
+      - flake8 stamp_detector/
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+
+  isort:
+    stage: ci
+    image: python:3.7
+    script:
+      - pip3 install isort==5.8.0
+      - isort stamp_detector/ -c
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+
+  mypy:
+    stage: ci
+    image: python:3.7
+    script:
+      - pip3 install mypy
+      - python3 setup.py develop
+      - mypy stamp_detector
+    allow_failure: true
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+
+  unittest:
+    stage: test
+    image: python:3.7
+    script:
+      - python3 setup.py develop
+      - pip3 install coverage==5.5
+      - coverage run --source stamp_detector -m unittest discover tests
+      - coverage xml
+      - coverage html
+    coverage:
+      type: cobertura
+      path: coverage.xml
+    artifacts:
+      name: coverage
+      paths:
+        - htmlcov
+      expires_in: 3 days
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
