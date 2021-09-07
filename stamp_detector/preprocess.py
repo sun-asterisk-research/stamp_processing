@@ -1,5 +1,5 @@
-import numpy as np
 import cv2
+import numpy as np
 import torch
 
 
@@ -34,14 +34,21 @@ def create_batch(images: np.array, shapes: set, batch_size: int = 16):
     indices = [item for sublist in split_batch for item in sublist]
     return images_batch, indices
 
-def process_image(img, device='cpu'):
+
+def process_image(img, device="cpu"):
     height, width = img.shape[:2]
     top = (640 - height) // 2
     bottom = 640 - height - top
     left = (640 - width) // 2
     right = 640 - width - left
     img = cv2.copyMakeBorder(
-        img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=(255, 255, 255),
+        img,
+        top,
+        bottom,
+        left,
+        right,
+        cv2.BORDER_CONSTANT,
+        value=(255, 255, 255),
     )
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
     img = np.ascontiguousarray(img)
@@ -88,8 +95,5 @@ def letterbox(
         img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_LINEAR)
     top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
     left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
-    img = cv2.copyMakeBorder(
-        img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color
-    )  # add border
+    img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return img, ratio, (dw, dh)
-

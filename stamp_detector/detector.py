@@ -1,13 +1,12 @@
-import numpy as np
-import torch
-
 from functools import partial
 from typing import List
 
-from stamp_detector.preprocess import letterbox, process_image, create_batch
-from stamp_detector.postprocess import non_max_suppression, scale_coords
-from stamp_detector.utils import select_device, load_torch_script_model
+import numpy as np
+import torch
 
+from stamp_detector.postprocess import non_max_suppression, scale_coords
+from stamp_detector.preprocess import create_batch, letterbox, process_image
+from stamp_detector.utils import load_torch_script_model, select_device
 
 
 class StampDetector:
@@ -19,14 +18,14 @@ class StampDetector:
         self.img_size = 640
         self.conf_thres = conf_thres
         self.iou_thres = iou_thres
-        
+
         self.process_func_ = partial(process_image, device=self.device)
 
     def predict(self, image_list: List[np.ndarray]):
         """
         Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
         Each element in the list is a numpy array of shape N x 4
-        
+
         Args:
             image_list (List[np.array]): input images
 
@@ -40,7 +39,7 @@ class StampDetector:
             images = [letterbox(x, 640, stride=32)[0] for x in origin_images]
             images = list(map(self.process_func_, images))
             tensor = torch.stack(images)
-            
+
             with torch.no_grad():
                 pred = self.model(tensor)[0]
             all_boxes = []
@@ -48,9 +47,7 @@ class StampDetector:
 
             for idx, det in enumerate(pred):
                 if len(det):
-                    det[:, :4] = scale_coords(
-                        images[idx].shape[1:], det[:, :4], origin_images[0].shape
-                    ).round()
+                    det[:, :4] = scale_coords(images[idx].shape[1:], det[:, :4], origin_images[0].shape).round()
                     det = det[:, :4]
                     all_boxes.append(det.cpu().numpy().astype("int").tolist())
                 else:
@@ -63,5 +60,3 @@ class StampDetector:
         predictions, _ = zip(*sorted_result)
 
         return list(predictions)
-
-
