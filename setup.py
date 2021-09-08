@@ -17,6 +17,7 @@ INSTALL_REQUIRES = [
     "torch>=1.8.1",
     "torchvision>=0.9.1",
     "pdf2image==1.14.0",
+    "gdown"
 ]
 
 DISTNAME = "stamp_processing"
@@ -45,7 +46,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     package_dir={"": "stamp_detector"},
-    packages=setuptools.find_packages(where="stamp_detector"),
+    packages=setuptools.find_packages(),
     python_requires=">=3.6",
     zip_safe=False,
     install_requires=INSTALL_REQUIRES,
