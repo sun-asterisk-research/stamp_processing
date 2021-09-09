@@ -7,23 +7,23 @@ from typing import List
 import numpy as np
 import torch
 
-from stamp_detector.postprocess import non_max_suppression, scale_coords
-from stamp_detector.preprocess import create_batch, letterbox, process_image
-from stamp_detector.utils import *
+from stamp_processing.postprocess import non_max_suppression, scale_coords
+from stamp_processing.preprocess import create_batch, letterbox, process_image
+from stamp_processing.utils import *
 
 
 class StampDetector:
     def __init__(self, device="cpu", conf_thres=0.3, iou_thres=0.3):
-        if not os.path.exists('tmp/'):
-            os.makedirs('tmp/')
+        if not os.path.exists("tmp/"):
+            os.makedirs("tmp/")
 
-        #Run first time when using
-        model_path = 'tmp/traced_weight.pt'
+        # Run first time when using
+        model_path = "tmp/traced_weight.pt"
         if not os.path.exists(model_path):
-            print('Downloading weight from google drive')
-            download_weight(DETECTOR_WEIGHT_URL, output='traced_weight.pt')
-            shutil.move('traced_weight.pt', model_path)
-        
+            print("Downloading weight from google drive")
+            download_weight(DETECTOR_WEIGHT_URL, output="traced_weight.pt")
+            shutil.move("traced_weight.pt", model_path)
+
         self.device = select_device(device)
         self.model, self.stride = load_torch_script_model(model_path, device=self.device)
         print("Using {} for stamp detection".format(self.device))

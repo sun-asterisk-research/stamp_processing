@@ -2,7 +2,7 @@ import unittest
 
 import torch
 
-from stamp_detector import utils
+from stamp_processing import utils
 
 
 class UtilsTestCase(unittest.TestCase):

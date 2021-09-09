@@ -2,6 +2,8 @@ import torch
 import gdown
 
 DETECTOR_WEIGHT_URL = "https://drive.google.com/uc?id=1M3xY_DkDiA5Eg6Crgko5-rbyAEvo1X4D"
+REMOVER_WEIGHT_URL = "https://drive.google.com/uc?id=1fQGVnatgHcMTmOxswqhE-vqoF_beovs1"
+
 
 def select_device(device=""):
     cpu = device.lower() == "cpu"
