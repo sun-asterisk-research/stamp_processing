@@ -13,19 +13,20 @@ from stamp_processing.utils import *
 
 
 class StampDetector:
-    def __init__(self, device="cpu", conf_thres=0.3, iou_thres=0.3):
-        if not os.path.exists("tmp/"):
-            os.makedirs("tmp/")
+    def __init__(self, model_path=None, device="cpu", conf_thres=0.3, iou_thres=0.3):
+        # if not os.path.exists("tmp/"):
+        #     os.makedirs("tmp/")
 
-        # Run first time when using
-        model_path = "tmp/traced_weight.pt"
-        if not os.path.exists(model_path):
-            print("Downloading weight from google drive")
-            download_weight(DETECTOR_WEIGHT_URL, output="traced_weight.pt")
-            shutil.move("traced_weight.pt", model_path)
+        # # Run first time when using
+        # model_path = "tmp/traced_weight.pt"
+        # if not os.path.exists(model_path):
+        #     print("Downloading weight from google drive")
+        #     download_weight(DETECTOR_WEIGHT_URL, output="traced_weight.pt")
+        #     shutil.move("traced_weight.pt", model_path)
 
         self.device = select_device(device)
-        self.model, self.stride = load_torch_script_model(model_path, device=self.device)
+        # self.model, self.stride = load_torch_script_model(model_path, device=self.device)
+        self.model, self.stride = load_yolo_model(model_path, device=self.device)
         print("Using {} for stamp detection".format(self.device))
 
         self.img_size = 640
