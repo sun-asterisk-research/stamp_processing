@@ -1,0 +1,2 @@
+from stamp_processing.detector import StampDetector
+from stamp_processing.remover import StampRemover

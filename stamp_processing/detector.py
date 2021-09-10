@@ -29,7 +29,7 @@ class StampDetector:
                 print(f"Finished downloading. Weight is saved at {model_path}")
 
             self.device = select_device(device)
-            self.model, self.stride = load_yolo_model(model_path, device=self.device)
+            self.model, self.stride = load_yolo_model(model_path, device=device)
         except Exception as e:
             print(e)
             print("There is something wrong when loading detector weight")
