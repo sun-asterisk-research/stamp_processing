@@ -5,8 +5,8 @@ from stamp_processing.module.yolov5.models.experimental import attempt_load
 from stamp_processing.module.yolov5 import YOLO_DIR
 
 
-DETECTOR_WEIGHT_URL = "https://drive.google.com/uc?id=1M3xY_DkDiA5Eg6Crgko5-rbyAEvo1X4D"
-REMOVER_WEIGHT_URL = "https://drive.google.com/uc?id=1fQGVnatgHcMTmOxswqhE-vqoF_beovs1"
+DETECTOR_WEIGHT_ID = "1YHH7pLoZEdyxw2AoLz9G4lrq6uuxweYB"
+REMOVER_WEIGHT_ID = "1fQGVnatgHcMTmOxswqhE-vqoF_beovs1"
 
 
 def select_device(device=""):
@@ -28,5 +28,6 @@ def load_yolo_model(weight_path, device):
     return model, model.stride
 
 
-def download_weight(url, output=None, quiet=False):
+def download_weight(file_id, output=None, quiet=False):
+    url = f"https://drive.google.com/uc?id={file_id}"
     return gdown.download(url=url, output=output, quiet=quiet)

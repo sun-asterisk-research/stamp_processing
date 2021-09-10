@@ -7,7 +7,7 @@ from typing import List
 from stamp_processing.module.unet import UnetInference
 from stamp_processing.detector import StampDetector
 from stamp_processing.preprocess import create_batch
-from stamp_processing.utils import download_weight, REMOVER_WEIGHT_URL
+from stamp_processing.utils import download_weight, REMOVER_WEIGHT_ID
 
 
 class StampRemover:
@@ -15,46 +15,46 @@ class StampRemover:
 
         if removal_weight is None:
             print("Downloading stamp remover weight from google drive")
-            download_weight(REMOVER_WEIGHT_URL, output="remover.pkl")
+            download_weight(REMOVER_WEIGHT_ID, output="stamp_remover.pkl")
 
             if not os.path.exists("tmp/"):
                 os.makedirs("tmp/", exist_ok=True)
 
-            removal_weight = os.path.join("/tmp/", "remover.pkl")
-            shutil.move("remover.pkl", removal_weight)
+            removal_weight = os.path.join("/tmp/", "stamp_remover.pkl")
+            shutil.move("stamp_remover.pkl", removal_weight)
             print(f"Finished downloading. Weight is saved at {removal_weight}")
 
         self.remover = UnetInference(removal_weight)
         self.detector = StampDetector(device=device)
         self.padding = 3
 
-    def __call__(self, images: List[np.ndarray], batch_size=16) -> List[np.ndarray]:
+    def __call__(self, image_list: List[np.ndarray], batch_size=16) -> List[np.ndarray]:
         """
         Detect and remove stamps from document images
         Args:
-            images (List[np.ndarray]): list of input images
+            image_list (List[np.ndarray]): list of input images
             batch_size (int, optional): Defaults to 16.
 
         Returns:
             List[np.ndarray]: Input images with stamps removed
         """
-        return self.__batch_removing(images, batch_size)
+        return self.__batch_removing(image_list, batch_size)
 
-    def __batch_removing(self, images, batch_size=16):
+    def __batch_removing(self, image_list, batch_size=16):
         new_pages = []
 
-        shapes = set(list(x.shape for x in images))
-        images_batch, indices = create_batch(images, shapes, batch_size)
-        num_batch = len(images) // batch_size
+        shapes = set(list(x.shape for x in image_list))
+        images_batch, indices = create_batch(image_list, shapes, batch_size)
+        num_batch = len(image_list) // batch_size
         detection_predictions = []
         for batch in images_batch:
             if len(batch):
-                detection_predictions.extend(self.detector.predict(batch))
+                detection_predictions.extend(self.detector.detect(batch))
         z = zip(detection_predictions, indices)
         sorted_result = sorted(z, key=lambda x: x[1])
         detection_predictions, _ = zip(*sorted_result)
         for idx, page_boxes in enumerate(detection_predictions):
-            page_img = images[idx]
+            page_img = image_list[idx]
             h, w, c = page_img.shape
             for box in page_boxes:
                 x_min, y_min, x_max, y_max = box[:4]

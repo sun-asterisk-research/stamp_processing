@@ -14,18 +14,19 @@ from stamp_processing.utils import *
 
 class StampDetector:
     def __init__(self, model_path=None, device="cpu", conf_thres=0.3, iou_thres=0.3):
-        # if not os.path.exists("tmp/"):
-        #     os.makedirs("tmp/")
 
-        # # Run first time when using
-        # model_path = "tmp/traced_weight.pt"
-        # if not os.path.exists(model_path):
-        #     print("Downloading weight from google drive")
-        #     download_weight(DETECTOR_WEIGHT_URL, output="traced_weight.pt")
-        #     shutil.move("traced_weight.pt", model_path)
+        if model_path is None:
+            print("Downloading stamp detection weight from google drive")
+            download_weight(DETECTOR_WEIGHT_ID, output="stamp_detector.pt")
+
+            if not os.path.exists("tmp/"):
+                os.makedirs("tmp/", exist_ok=True)
+
+            model_path = os.path.join("/tmp/", "stamp_detector.pt")
+            shutil.move("stamp_detector.pt", model_path)
+            print(f"Finished downloading. Weight is saved at {model_path}")
 
         self.device = select_device(device)
-        # self.model, self.stride = load_torch_script_model(model_path, device=self.device)
         self.model, self.stride = load_yolo_model(model_path, device=self.device)
         print("Using {} for stamp detection".format(self.device))
 
@@ -35,7 +36,7 @@ class StampDetector:
 
         self.process_func_ = partial(process_image, device=self.device)
 
-    def predict(self, image_list: List[np.ndarray]):
+    def __call__(self, image_list: List[np.ndarray]):
         """
         Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
         Each element in the list is a numpy array of shape N x 4
@@ -46,6 +47,10 @@ class StampDetector:
         Returns:
             [List[np.ndarray]]: output bounding boxes
         """
+        return self.detect(image_list)
+
+    def detect(self, image_list):
+
         batches, indices = create_batch(image_list, set(list(x.shape for x in image_list)))
         predictions = []
 
