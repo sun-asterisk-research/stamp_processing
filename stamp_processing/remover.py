@@ -2,33 +2,44 @@ import os
 import shutil
 import numpy as np
 
-from typing import List
+from typing import List, Union
 
 from stamp_processing.module.unet import UnetInference
 from stamp_processing.detector import StampDetector
 from stamp_processing.preprocess import create_batch
-from stamp_processing.utils import download_weight, REMOVER_WEIGHT_ID
+from stamp_processing.utils import download_weight, REMOVER_WEIGHT_ID, check_image_shape
 
 
 class StampRemover:
-    def __init__(self, detection_weight=None, removal_weight=None, device=""):
+    def __init__(self, detection_weight=None, removal_weight=None, device="cpu"):
+        assert device == "cpu", "Currently only support cpu inference"
 
-        if removal_weight is None:
-            print("Downloading stamp remover weight from google drive")
-            download_weight(REMOVER_WEIGHT_ID, output="stamp_remover.pkl")
+        try:
+            if removal_weight is None:
+                print("Downloading stamp remover weight from google drive")
+                download_weight(REMOVER_WEIGHT_ID, output="stamp_remover.pkl")
 
-            if not os.path.exists("tmp/"):
-                os.makedirs("tmp/", exist_ok=True)
+                if not os.path.exists("tmp/"):
+                    os.makedirs("tmp/", exist_ok=True)
 
-            removal_weight = os.path.join("/tmp/", "stamp_remover.pkl")
-            shutil.move("stamp_remover.pkl", removal_weight)
-            print(f"Finished downloading. Weight is saved at {removal_weight}")
+                removal_weight = os.path.join("/tmp/", "stamp_remover.pkl")
+                shutil.move("stamp_remover.pkl", removal_weight)
+                print(f"Finished downloading. Weight is saved at {removal_weight}")
 
-        self.remover = UnetInference(removal_weight)
-        self.detector = StampDetector(device=device)
+            self.remover = UnetInference(removal_weight)
+        except Exception as e:
+            print(e)
+            print("There is something wrong when loading detector weight")
+            print(
+                f"""Please make sure you provide the correct path to the weight
+                or mannually download the weight at https://drive.google.com/file/d/{REMOVER_WEIGHT_ID}/view?usp=sharing"""
+            )
+            raise ValueError()
+
+        self.detector = StampDetector(detection_weight, device=device)
         self.padding = 3
 
-    def __call__(self, image_list: List[np.ndarray], batch_size=16) -> List[np.ndarray]:
+    def __call__(self, image_list: Union[List[np.ndarray], np.ndarray], batch_size=16) -> List[np.ndarray]:
         """
         Detect and remove stamps from document images
         Args:
@@ -38,6 +49,13 @@ class StampRemover:
         Returns:
             List[np.ndarray]: Input images with stamps removed
         """
+        if not isinstance(image_list, (np.ndarray, list)):
+            raise TypeError("Invalid Type: Input must be of type list or np.ndarray")
+
+        if len(image_list) > 0:
+            check_image_shape(image_list[0])
+        else:
+            return []
         return self.__batch_removing(image_list, batch_size)
 
     def __batch_removing(self, image_list, batch_size=16):
