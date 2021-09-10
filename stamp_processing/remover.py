@@ -7,7 +7,7 @@ from typing import List, Union
 from stamp_processing.module.unet import UnetInference
 from stamp_processing.detector import StampDetector
 from stamp_processing.preprocess import create_batch
-from stamp_processing.utils import download_weight, REMOVER_WEIGHT_ID, check_image_shape
+from stamp_processing.utils import *
 
 
 class StampRemover:
@@ -16,7 +16,7 @@ class StampRemover:
 
         try:
             if removal_weight is None:
-                print("Downloading stamp remover weight from google drive")
+                logger.info("Downloading stamp remover weight from google drive")
                 download_weight(REMOVER_WEIGHT_ID, output="stamp_remover.pkl")
 
                 if not os.path.exists("tmp/"):
@@ -24,13 +24,13 @@ class StampRemover:
 
                 removal_weight = os.path.join("/tmp/", "stamp_remover.pkl")
                 shutil.move("stamp_remover.pkl", removal_weight)
-                print(f"Finished downloading. Weight is saved at {removal_weight}")
+                logger.info(f"Finished downloading. Weight is saved at {removal_weight}")
 
             self.remover = UnetInference(removal_weight)
         except Exception as e:
-            print(e)
-            print("There is something wrong when loading detector weight")
-            print(
+            logger.error(e)
+            logger.error("There is something wrong when loading detector weight")
+            logger.error(
                 f"""Please make sure you provide the correct path to the weight
                 or mannually download the weight at https://drive.google.com/file/d/{REMOVER_WEIGHT_ID}/view?usp=sharing"""
             )

@@ -18,7 +18,7 @@ class StampDetector:
 
         try:
             if model_path is None:
-                print("Downloading stamp detection weight from google drive")
+                logger.info("Downloading stamp detection weight from google drive")
                 download_weight(DETECTOR_WEIGHT_ID, output="stamp_detector.pt")
 
                 if not os.path.exists("tmp/"):
@@ -26,14 +26,14 @@ class StampDetector:
 
                 model_path = os.path.join("/tmp/", "stamp_detector.pt")
                 shutil.move("stamp_detector.pt", model_path)
-                print(f"Finished downloading. Weight is saved at {model_path}")
+                logger.info(f"Finished downloading. Weight is saved at {model_path}")
 
             self.device = select_device(device)
             self.model, self.stride = load_yolo_model(model_path, device=device)
         except Exception as e:
-            print(e)
-            print("There is something wrong when loading detector weight")
-            print(
+            logger.error(e)
+            logger.error("There is something wrong when loading detector weight")
+            logger.error(
                 f"""Please make sure you provide the correct path to the weight
                 or mannually download the weight at https://drive.google.com/file/d/{DETECTOR_WEIGHT_ID}/view?usp=sharing"""
             )

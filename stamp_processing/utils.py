@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import torch
 import gdown
@@ -5,6 +7,9 @@ import gdown
 from stamp_processing.module.yolov5.models.experimental import attempt_load
 from stamp_processing.module.yolov5 import YOLO_DIR
 
+logging.basicConfig(format="%(levelname)s - %(message)s'")
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 DETECTOR_WEIGHT_ID = "1YHH7pLoZEdyxw2AoLz9G4lrq6uuxweYB"
 REMOVER_WEIGHT_ID = "1fQGVnatgHcMTmOxswqhE-vqoF_beovs1"
@@ -23,8 +28,7 @@ def load_torch_script_model(weight_path, device="cpu"):
 
 
 def load_yolo_model(weight_path, device):
-    print(YOLO_DIR)
-    model = torch.hub.load(str(YOLO_DIR), "custom", path=weight_path, source="local")
+    model = torch.hub.load(str(YOLO_DIR), "custom", path=weight_path, source="local", force_reload=True)
     model.to(device)
     return model, model.stride
 
