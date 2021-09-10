@@ -2,7 +2,7 @@ import os
 import shutil
 
 from functools import partial
-from typing import List
+from typing import List, Union
 
 import numpy as np
 import torch
@@ -14,20 +14,30 @@ from stamp_processing.utils import *
 
 class StampDetector:
     def __init__(self, model_path=None, device="cpu", conf_thres=0.3, iou_thres=0.3):
+        assert device == "cpu", "Currently only support cpu inference"
 
-        if model_path is None:
-            print("Downloading stamp detection weight from google drive")
-            download_weight(DETECTOR_WEIGHT_ID, output="stamp_detector.pt")
+        try:
+            if model_path is None:
+                print("Downloading stamp detection weight from google drive")
+                download_weight(DETECTOR_WEIGHT_ID, output="stamp_detector.pt")
 
-            if not os.path.exists("tmp/"):
-                os.makedirs("tmp/", exist_ok=True)
+                if not os.path.exists("tmp/"):
+                    os.makedirs("tmp/", exist_ok=True)
 
-            model_path = os.path.join("/tmp/", "stamp_detector.pt")
-            shutil.move("stamp_detector.pt", model_path)
-            print(f"Finished downloading. Weight is saved at {model_path}")
+                model_path = os.path.join("/tmp/", "stamp_detector.pt")
+                shutil.move("stamp_detector.pt", model_path)
+                print(f"Finished downloading. Weight is saved at {model_path}")
 
-        self.device = select_device(device)
-        self.model, self.stride = load_yolo_model(model_path, device=self.device)
+            self.device = select_device(device)
+            self.model, self.stride = load_yolo_model(model_path, device=self.device)
+        except Exception as e:
+            print(e)
+            print("There is something wrong when loading detector weight")
+            print(
+                f"""Please make sure you provide the correct path to the weight
+                or mannually download the weight at https://drive.google.com/file/d/{DETECTOR_WEIGHT_ID}/view?usp=sharing"""
+            )
+            raise ValueError()
         print("Using {} for stamp detection".format(self.device))
 
         self.img_size = 640
@@ -36,7 +46,7 @@ class StampDetector:
 
         self.process_func_ = partial(process_image, device=self.device)
 
-    def __call__(self, image_list: List[np.ndarray]):
+    def __call__(self, image_list: Union[List[np.ndarray], np.ndarray]) -> List[np.ndarray]:
         """
         Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
         Each element in the list is a numpy array of shape N x 4
@@ -47,6 +57,13 @@ class StampDetector:
         Returns:
             [List[np.ndarray]]: output bounding boxes
         """
+        if not isinstance(image_list, (np.ndarray, list)):
+            raise TypeError("Invalid Type: Input must be of type list or np.ndarray")
+
+        if len(image_list) > 0:
+            check_image_shape(image_list[0])
+        else:
+            return []
         return self.detect(image_list)
 
     def detect(self, image_list):

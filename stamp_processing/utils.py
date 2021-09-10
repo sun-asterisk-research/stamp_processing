@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import gdown
 
@@ -31,3 +32,13 @@ def load_yolo_model(weight_path, device):
 def download_weight(file_id, output=None, quiet=False):
     url = f"https://drive.google.com/uc?id={file_id}"
     return gdown.download(url=url, output=output, quiet=quiet)
+
+
+def check_image_shape(image):
+    if not isinstance(image, np.ndarray):
+        raise TypeError("Invalid Type: List value must be of type np.ndarray")
+    else:
+        if len(image.shape) != 3:
+            raise ValueError("Invalid image shape")
+        if image.shape[-1] != 3:
+            raise ValueError("Image must be 3 dimensional")
