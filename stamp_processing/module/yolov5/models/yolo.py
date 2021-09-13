@@ -223,14 +223,13 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
             CrossConv,
             BottleneckCSP,
             C3,
-            C3TR,
         ]:
             c1, c2 = ch[f], args[0]
             if c2 != no:  # if not output
                 c2 = make_divisible(c2 * gw, 8)
 
             args = [c1, c2, *args[1:]]
-            if m in [BottleneckCSP, C3, C3TR]:
+            if m in [BottleneckCSP, C3]:
                 args.insert(2, n)  # number of repeats
                 n = 1
         elif m is nn.BatchNorm2d:
@@ -264,28 +263,3 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
             ch = []
         ch.append(c2)
     return nn.Sequential(*layers), sorted(save)
-
-
-# if __name__ == '__main__':
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('--cfg', type=str, default='yolov5s.yaml', help='model.yaml')
-#     parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
-#     opt = parser.parse_args()
-#     opt.cfg = check_file(opt.cfg)  # check file
-#     set_logging()
-#     device = select_device(opt.device)
-
-#     # Create model
-#     model = Model(opt.cfg).to(device)
-#     model.train()
-
-# Profile
-# img = torch.rand(8 if torch.cuda.is_available() else 1, 3, 640, 640).to(device)
-# y = model(img, profile=True)
-
-# Tensorboard
-# from torch.utils.tensorboard import SummaryWriter
-# tb_writer = SummaryWriter()
-# print("Run 'tensorboard --logdir=models/runs' to view tensorboard at http://localhost:6006/")
-# tb_writer.add_graph(model.model, img)  # add model to tensorboard
-# tb_writer.add_image('test', img[0], dataformats='CWH')  # add model to tensorboard
