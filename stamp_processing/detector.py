@@ -7,8 +7,9 @@ from typing import List, Union
 import numpy as np
 import torch
 
-from stamp_processing.postprocess import non_max_suppression, scale_coords
-from stamp_processing.preprocess import create_batch, letterbox, process_image
+from stamp_processing.preprocess import create_batch, process_image
+from stamp_processing.module.yolov5.utils.datasets import letterbox
+from stamp_processing.module.yolov5.utils.general import non_max_suppression, scale_coords
 from stamp_processing.utils import *
 
 

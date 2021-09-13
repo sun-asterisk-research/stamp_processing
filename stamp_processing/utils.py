@@ -21,12 +21,6 @@ def select_device(device=""):
     return torch.device("cuda:0" if cuda else "cpu")
 
 
-def load_torch_script_model(weight_path, device="cpu"):
-    model = torch.jit.load(weight_path, map_location=device)
-    stride = 32
-    return model, stride
-
-
 def load_yolo_model(weight_path, device):
     model = torch.hub.load(str(YOLO_DIR), "custom", path=weight_path, source="local", force_reload=True)
     model.to(device)
