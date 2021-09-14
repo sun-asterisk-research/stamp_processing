@@ -17,19 +17,18 @@ class StampDetector:
     def __init__(self, model_path=None, device="cpu", conf_thres=0.3, iou_thres=0.3):
         assert device == "cpu", "Currently only support cpu inference"
 
+        if model_path is None:
+            if not os.path.exists("tmp/"):
+                os.makedirs("tmp/", exist_ok=True)
+            model_path = os.path.join("tmp", "stamp_detector.pt")
+
+            logger.info("Downloading stamp detection weight from google drive")
+            download_weight(DETECTOR_WEIGHT_ID, output=model_path)
+            logger.info(f"Finished downloading. Weight is saved at {model_path}")
+
+        self.device = select_device(device)
+
         try:
-            if model_path is None:
-                logger.info("Downloading stamp detection weight from google drive")
-                download_weight(DETECTOR_WEIGHT_ID, output="stamp_detector.pt")
-
-                if not os.path.exists("tmp/"):
-                    os.makedirs("tmp/", exist_ok=True)
-
-                model_path = os.path.join("/tmp/", "stamp_detector.pt")
-                shutil.move("stamp_detector.pt", model_path)
-                logger.info(f"Finished downloading. Weight is saved at {model_path}")
-
-            self.device = select_device(device)
             self.model, self.stride = load_yolo_model(model_path, device=device)
         except Exception as e:
             logger.error(e)
@@ -38,7 +37,7 @@ class StampDetector:
                 f"""Please make sure you provide the correct path to the weight
                 or mannually download the weight at https://drive.google.com/file/d/{DETECTOR_WEIGHT_ID}/view?usp=sharing"""
             )
-            raise ValueError()
+            raise FileNotFoundError()
         print("Using {} for stamp detection".format(self.device))
 
         self.img_size = 640

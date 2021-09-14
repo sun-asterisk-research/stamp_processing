@@ -29,7 +29,15 @@ def load_yolo_model(weight_path, device):
 
 def download_weight(file_id, output=None, quiet=False):
     url = f"https://drive.google.com/uc?id={file_id}"
-    return gdown.download(url=url, output=output, quiet=quiet)
+    try:
+        gdown.cached_download(url=url, path=output, quiet=quiet)
+    except Exception as e:
+        logger.error(e)
+        logger.error("Something went wrong when downloading the weight")
+        logger.error(
+            """Check your internet connection or manually download the weight 
+                    at https://drive.google.com/file/d/{file_id}/view?usp=sharing"""
+        )
 
 
 def check_image_shape(image):

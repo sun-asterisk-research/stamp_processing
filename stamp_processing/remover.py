@@ -14,18 +14,16 @@ class StampRemover:
     def __init__(self, detection_weight=None, removal_weight=None, device="cpu"):
         assert device == "cpu", "Currently only support cpu inference"
 
+        if removal_weight is None:
+            if not os.path.exists("tmp/"):
+                os.makedirs("tmp/", exist_ok=True)
+            removal_weight = os.path.join("tmp", "stamp_remover.pkl")
+
+            logger.info("Downloading stamp remover weight from google drive")
+            download_weight(REMOVER_WEIGHT_ID, output=removal_weight)
+            logger.info(f"Finished downloading. Weight is saved at {removal_weight}")
+
         try:
-            if removal_weight is None:
-                logger.info("Downloading stamp remover weight from google drive")
-                download_weight(REMOVER_WEIGHT_ID, output="stamp_remover.pkl")
-
-                if not os.path.exists("tmp/"):
-                    os.makedirs("tmp/", exist_ok=True)
-
-                removal_weight = os.path.join("/tmp/", "stamp_remover.pkl")
-                shutil.move("stamp_remover.pkl", removal_weight)
-                logger.info(f"Finished downloading. Weight is saved at {removal_weight}")
-
             self.remover = UnetInference(removal_weight)
         except Exception as e:
             logger.error(e)
