@@ -16,8 +16,8 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
     """
     from pathlib import Path
 
-    from stamp_processing.module.yolov5.models.yolo import Model
     from stamp_processing.module.yolov5.models.experimental import attempt_load
+    from stamp_processing.module.yolov5.models.yolo import Model
     from stamp_processing.module.yolov5.utils.torch_utils import select_device
 
     file = Path(__file__).absolute()

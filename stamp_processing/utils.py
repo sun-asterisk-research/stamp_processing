@@ -1,11 +1,11 @@
 import logging
 
+import gdown
 import numpy as np
 import torch
-import gdown
 
-from stamp_processing.module.yolov5.models.experimental import attempt_load
 from stamp_processing.module.yolov5 import YOLO_DIR
+
 
 logging.basicConfig(format="%(levelname)s - %(message)s'")
 logger = logging.getLogger()
@@ -35,8 +35,8 @@ def download_weight(file_id, output=None, quiet=False):
         logger.error(e)
         logger.error("Something went wrong when downloading the weight")
         logger.error(
-            """Check your internet connection or manually download the weight 
-                    at https://drive.google.com/file/d/{file_id}/view?usp=sharing"""
+            "Check your internet connection or manually download the weight "
+            f"at https://drive.google.com/file/d/{file_id}/view?usp=sharing"
         )
 
 

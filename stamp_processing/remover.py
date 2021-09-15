@@ -1,13 +1,12 @@
 import os
-import shutil
-import numpy as np
-
 from typing import List, Union
 
-from stamp_processing.module.unet import UnetInference
+import numpy as np
+
 from stamp_processing.detector import StampDetector
+from stamp_processing.module.unet import UnetInference
 from stamp_processing.preprocess import create_batch
-from stamp_processing.utils import *
+from stamp_processing.utils import REMOVER_WEIGHT_ID, check_image_shape, download_weight, logger
 
 
 class StampRemover:
@@ -29,10 +28,11 @@ class StampRemover:
             logger.error(e)
             logger.error("There is something wrong when loading detector weight")
             logger.error(
-                f"""Please make sure you provide the correct path to the weight
-                or mannually download the weight at https://drive.google.com/file/d/{REMOVER_WEIGHT_ID}/view?usp=sharing"""
+                "Please make sure you provide the correct path to the weight"
+                "or mannually download the weight at"
+                f"https://drive.google.com/file/d/{REMOVER_WEIGHT_ID}/view?usp=sharing"
             )
-            raise ValueError()
+            raise FileNotFoundError()
 
         self.detector = StampDetector(detection_weight, device=device)
         self.padding = 3
@@ -61,7 +61,7 @@ class StampRemover:
 
         shapes = set(list(x.shape for x in image_list))
         images_batch, indices = create_batch(image_list, shapes, batch_size)
-        num_batch = len(image_list) // batch_size
+        # num_batch = len(image_list) // batch_size
         detection_predictions = []
         for batch in images_batch:
             if len(batch):

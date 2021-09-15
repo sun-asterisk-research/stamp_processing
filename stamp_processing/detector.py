@@ -1,16 +1,21 @@
 import os
-import shutil
-
 from functools import partial
 from typing import List, Union
 
 import numpy as np
 import torch
 
-from stamp_processing.preprocess import create_batch, process_image
 from stamp_processing.module.yolov5.utils.datasets import letterbox
 from stamp_processing.module.yolov5.utils.general import non_max_suppression, scale_coords
-from stamp_processing.utils import *
+from stamp_processing.preprocess import create_batch, process_image
+from stamp_processing.utils import (
+    DETECTOR_WEIGHT_ID,
+    check_image_shape,
+    download_weight,
+    load_yolo_model,
+    logger,
+    select_device,
+)
 
 
 class StampDetector:
@@ -34,8 +39,9 @@ class StampDetector:
             logger.error(e)
             logger.error("There is something wrong when loading detector weight")
             logger.error(
-                f"""Please make sure you provide the correct path to the weight
-                or mannually download the weight at https://drive.google.com/file/d/{DETECTOR_WEIGHT_ID}/view?usp=sharing"""
+                "Please make sure you provide the correct path to the weight "
+                "or mannually download the weight at "
+                f"https://drive.google.com/file/d/{DETECTOR_WEIGHT_ID}/view?usp=sharing"
             )
             raise FileNotFoundError()
         print("Using {} for stamp detection".format(self.device))

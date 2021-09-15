@@ -1,5 +1,7 @@
 import sys
+
 from stamp_processing.module.yolov5 import YOLO_DIR
+
 
 sys.path.append(str(YOLO_DIR))
 

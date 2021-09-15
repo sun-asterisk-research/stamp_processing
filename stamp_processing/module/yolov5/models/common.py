@@ -1,24 +1,15 @@
 # YOLOv5 common modules
 
 import math
-
 from pathlib import Path
 
 import numpy as np
-
 import torch
 import torch.nn as nn
-
 from torch.cuda import amp
 
 from stamp_processing.module.yolov5.utils.datasets import letterbox
-from stamp_processing.module.yolov5.utils.general import (
-    make_divisible,
-    non_max_suppression,
-    scale_coords,
-    xyxy2xywh,
-)
-
+from stamp_processing.module.yolov5.utils.general import make_divisible, non_max_suppression, scale_coords, xyxy2xywh
 from stamp_processing.module.yolov5.utils.torch_utils import time_synchronized
 
 

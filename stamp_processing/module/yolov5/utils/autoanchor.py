@@ -1,8 +1,4 @@
 # Auto-anchor utils
-
-import numpy as np
-
-
 def check_anchor_order(m):
     # Check anchor order against stride order for YOLOv5 Detect() module m, and correct if necessary
     a = m.anchor_grid.prod(-1).view(-1)  # anchor area

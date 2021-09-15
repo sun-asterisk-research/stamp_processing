@@ -4,6 +4,7 @@ import logging
 import sys
 from copy import deepcopy
 
+
 sys.path.append("./")  # to run '$ python *.py' files in subdirectories
 logger = logging.getLogger(__name__)
 
@@ -11,13 +12,7 @@ from stamp_processing.module.yolov5.models.common import *
 from stamp_processing.module.yolov5.models.experimental import *
 from stamp_processing.module.yolov5.utils.autoanchor import check_anchor_order
 from stamp_processing.module.yolov5.utils.general import make_divisible
-from stamp_processing.module.yolov5.utils.torch_utils import (
-    copy_attr,
-    fuse_conv_and_bn,
-    initialize_weights,
-    scale_img,
-    time_synchronized,
-)
+from stamp_processing.module.yolov5.utils.torch_utils import copy_attr, fuse_conv_and_bn, initialize_weights, scale_img
 
 
 class Detect(nn.Module):
@@ -207,8 +202,8 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
         for j, a in enumerate(args):
             try:
                 args[j] = eval(a) if isinstance(a, str) else a  # eval strings
-            except:
-                pass
+            except Exception as e:
+                logger.error(e)
 
         n = max(round(n * gd), 1) if n > 1 else n  # depth gain
         if m in [

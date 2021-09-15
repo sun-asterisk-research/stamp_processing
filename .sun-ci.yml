@@ -11,7 +11,7 @@ jobs:
     image: python:3.7
     script:
       - pip3 install flake8==3.9.0
-      - flake8 stamp_detector/
+      - flake8 stamp_processing/
     except:
       messages:
         - '/\[ci skip ci\]/'
@@ -21,7 +21,7 @@ jobs:
     image: python:3.7
     script:
       - pip3 install isort==5.8.0
-      - isort stamp_detector/ -c
+      - isort stamp_processing/ -c
     except:
       messages:
         - '/\[ci skip ci\]/'
@@ -32,7 +32,7 @@ jobs:
     script:
       - pip3 install mypy
       - python3 setup.py develop
-      - mypy stamp_detector
+      - mypy stamp_processing
     allow_failure: true
     except:
       messages:
@@ -44,7 +44,7 @@ jobs:
     script:
       - python3 setup.py develop
       - pip3 install coverage==5.5
-      - coverage run --source stamp_detector -m unittest discover tests
+      - coverage run --source stamp_processing -m unittest discover tests
       - coverage xml
       - coverage html
     coverage:
