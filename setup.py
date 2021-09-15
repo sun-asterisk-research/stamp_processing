@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on  
-@author: Hieu Bui - Sun* AI Research Team
+@author: Sun* AI Research Team
 """
 
 
@@ -12,22 +12,24 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 INSTALL_REQUIRES = [
-    "numpy>=1.20.3",
-    "opencv-python==4.5.1.48",
-    "torch>=1.8.1",
-    "torchvision>=0.9.1",
-    "pdf2image==1.14.0",
-    "gdown"
+    "gdown==3.12.2",
+    "opencv_python==4.1.2.30",
+    "torchvision==0.9.1",
+    "torch==1.8.1",
+    "fastai==2.3.1",
+    "numpy==1.18.5",
+    "PyYAML==5.4.1",
 ]
 
 DISTNAME = "stamp_processing"
 VERSION = "0.0.1"
 LICENSE = ""
 DESCRIPTION = "Stamp detector"
-AUTHOR = "Hieu Bui"
-EMAIL = ""
-URL = ""
-DOWNLOAD_URL = ""
+AUTHOR = "Sun* AI Research Team"
+EMAIL = "bui.hai.minh.hieu@sun-asterisk.com"
+URL = "https://github.com/sun-asterisk-research/stamp_processing/"
+DOWNLOAD_URL = "https://github.com/sun-asterisk-research/stamp_processing/"
+
 
 setuptools.setup(
     name=DISTNAME,
@@ -45,7 +47,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "stamp_detector"},
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
     zip_safe=False,
