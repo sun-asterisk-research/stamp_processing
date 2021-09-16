@@ -59,12 +59,13 @@ class StampDetector:
         Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
         Each element in the list is a numpy array of shape N x 4
 
-        Args:
+        Arguments:
             image_list (List[np.array]): input images
 
         Returns:
             [List[np.ndarray]]: output bounding boxes
         """
+
         if not isinstance(image_list, (np.ndarray, list)):
             raise TypeError("Invalid Type: Input must be of type list or np.ndarray")
 
@@ -75,7 +76,9 @@ class StampDetector:
         return self.detect(image_list)  # type: ignore
 
     def detect(self, image_list):  # type: ignore
-
+        """
+        Use __call__ method
+        """
         batches, indices = create_batch(image_list, set(list(x.shape for x in image_list)))
         predictions = []
 

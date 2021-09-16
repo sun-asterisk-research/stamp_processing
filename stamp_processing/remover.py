@@ -42,7 +42,7 @@ class StampRemover:
     def __call__(self, image_list: Union[List[np.ndarray], np.ndarray], batch_size: int = 16) -> List[np.ndarray]:
         """
         Detect and remove stamps from document images
-        Args:
+        Arguments:
             image_list (List[np.ndarray]): list of input images
             batch_size (int, optional): Defaults to 16.
 
