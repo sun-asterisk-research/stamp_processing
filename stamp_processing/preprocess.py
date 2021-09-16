@@ -40,6 +40,15 @@ def create_batch(
 
 
 def process_image(img: np.ndarray, device: str = "cpu") -> np.ndarray:
+    """Preprocess function for yolov5
+
+    Args:
+        img (np.ndarray): Input image
+        device (str, optional): torch device. Defaults to "cpu".
+
+    Returns:
+        np.ndarray: preprocessed image
+    """
     height, width = img.shape[:2]
     top = (640 - height) // 2
     bottom = 640 - height - top

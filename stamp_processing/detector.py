@@ -22,6 +22,7 @@ class StampDetector:
     def __init__(
         self, model_path: Union[str, None] = None, device: str = "cpu", conf_thres: float = 0.3, iou_thres: float = 0.3
     ) -> None:
+        """Create an object for stamp detection"""
         assert device == "cpu", "Currently only support cpu inference"
 
         if model_path is None:
@@ -55,11 +56,10 @@ class StampDetector:
         self.process_func_ = partial(process_image, device=self.device)
 
     def __call__(self, image_list: Union[List[np.ndarray], np.ndarray]) -> List[np.ndarray]:
-        """
-        Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
+        """Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
         Each element in the list is a numpy array of shape N x 4
 
-        Arguments:
+        Args:
             image_list (List[np.array]): input images
 
         Returns:
@@ -73,9 +73,9 @@ class StampDetector:
             check_image_shape(image_list[0])
         else:
             return []
-        return self.detect(image_list)  # type: ignore
+        return self.__detect(image_list)  # type: ignore
 
-    def detect(self, image_list):  # type: ignore
+    def __detect(self, image_list):  # type: ignore
         """
         Use __call__ method
         """

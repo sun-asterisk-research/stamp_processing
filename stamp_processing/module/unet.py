@@ -10,7 +10,7 @@ __all__ = ["CustomUnetBlock", "CustomDynamicUnet", "UnetInference"]
 
 
 class CustomUnetBlock(Module):
-    "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
+    """A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."""
 
     @delegates(ConvLayer.__init__)
     def __init__(
@@ -55,7 +55,7 @@ class CustomUnetBlock(Module):
 
 
 class CustomDynamicUnet(SequentialEx):
-    "Create a U-Net from a given architecture."
+    """Create a U-Net from a given architecture."""
 
     def __init__(
         self,
@@ -150,11 +150,12 @@ class PerceptualLoss:
 
 class UnetInference:
     def __init__(self, model_path):
+        """Inference interface for unet model"""
         self.learn = load_learner(model_path)
         self.learn.model.eval()
 
     def __call__(self, image_array: str, bs: int = 1) -> List[np.ndarray]:
-        """
+        """Perform forward pass and decode the prediction of Unet model
 
         Args:
             image_array (list): list of numpy array

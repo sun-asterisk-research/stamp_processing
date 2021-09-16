@@ -13,6 +13,8 @@ class StampRemover:
     def __init__(
         self, detection_weight: Union[str, None] = None, removal_weight: Union[str, None] = None, device: str = "cpu"
     ):
+        """Create an object to remove stamps from document images"""
+
         assert device == "cpu", "Currently only support cpu inference"
 
         if removal_weight is None:
@@ -40,9 +42,9 @@ class StampRemover:
         self.padding = 3
 
     def __call__(self, image_list: Union[List[np.ndarray], np.ndarray], batch_size: int = 16) -> List[np.ndarray]:
-        """
-        Detect and remove stamps from document images
-        Arguments:
+        """Detect and remove stamps from document images
+
+        Args:
             image_list (List[np.ndarray]): list of input images
             batch_size (int, optional): Defaults to 16.
 
