@@ -4,8 +4,13 @@ from typing import Tuple, Union
 import gdown
 import numpy as np
 import torch
+<<<<<<< HEAD
 from torch._C import Module
 from torch._C import device as torch_device
+=======
+from torch import device as torch_device
+from torch.nn import Module
+>>>>>>> More typehint, update CI config
 
 from stamp_processing.module.yolov5 import YOLO_DIR
 

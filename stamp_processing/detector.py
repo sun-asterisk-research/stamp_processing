@@ -91,10 +91,8 @@ class StampDetector:
 
             for idx, det in enumerate(pred):
                 if len(det):
-                    det[:, :4] = scale_coords(
-                        images[idx].shape[1:], det[:, :4], origin_images[0].shape
-                    ).round()  # type:ignore
-                    det = det[:, :4]
+                    det[:, :4] = scale_coords(images[idx].shape[1:], det[:, :4], origin_images[0].shape)  # type: ignore
+                    det = det[:, :4].round()
                     all_boxes.append(det.cpu().numpy().astype("int").tolist())
                 else:
                     all_boxes.append([])
