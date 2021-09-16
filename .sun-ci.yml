@@ -32,7 +32,7 @@ jobs:
     script:
       - pip3 install mypy
       - python3 setup.py develop
-      - mypy stamp_processing
+      - mypy --install-types --non-interactive --ignore-missing-imports
     allow_failure: true
     except:
       messages:

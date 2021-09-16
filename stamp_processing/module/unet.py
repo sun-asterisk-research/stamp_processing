@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 import torch
 from fastai.vision.all import *
@@ -151,7 +153,7 @@ class UnetInference:
         self.learn = load_learner(model_path)
         self.learn.model.eval()
 
-    def __call__(self, image_array: str, bs=1):
+    def __call__(self, image_array: str, bs: int = 1) -> List[np.ndarray]:
         """
 
         Args:

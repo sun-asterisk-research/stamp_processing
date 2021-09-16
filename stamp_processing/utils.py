@@ -1,8 +1,11 @@
 import logging
+from typing import Tuple, Union
 
 import gdown
 import numpy as np
 import torch
+from torch._C import Module
+from torch._C import device as torch_device
 
 from stamp_processing.module.yolov5 import YOLO_DIR
 
@@ -15,19 +18,19 @@ DETECTOR_WEIGHT_ID = "1YHH7pLoZEdyxw2AoLz9G4lrq6uuxweYB"
 REMOVER_WEIGHT_ID = "1fQGVnatgHcMTmOxswqhE-vqoF_beovs1"
 
 
-def select_device(device=""):
+def select_device(device: str = "") -> torch_device:
     cpu = device.lower() == "cpu"
     cuda = not cpu and torch.cuda.is_available()
-    return torch.device("cuda:0" if cuda else "cpu")
+    return torch_device("cuda:0" if cuda else "cpu")
 
 
-def load_yolo_model(weight_path, device):
+def load_yolo_model(weight_path: str, device: str) -> Tuple[Module, int]:
     model = torch.hub.load(str(YOLO_DIR), "custom", path=weight_path, source="local", force_reload=True)
     model.to(device)
     return model, model.stride
 
 
-def download_weight(file_id, output=None, quiet=False):
+def download_weight(file_id: str, output: Union[str, None] = None, quiet: bool = False) -> None:
     url = f"https://drive.google.com/uc?id={file_id}"
     try:
         gdown.cached_download(url=url, path=output, quiet=quiet)
@@ -40,7 +43,7 @@ def download_weight(file_id, output=None, quiet=False):
         )
 
 
-def check_image_shape(image):
+def check_image_shape(image: np.ndarray) -> None:
     if not isinstance(image, np.ndarray):
         raise TypeError("Invalid Type: List value must be of type np.ndarray")
     else:

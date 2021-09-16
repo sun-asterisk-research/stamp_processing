@@ -1,9 +1,13 @@
+from typing import List, Set, Tuple
+
 import cv2
 import numpy as np
 import torch
 
 
-def create_batch(images: np.array, shapes: set, batch_size: int = 16):
+def create_batch(
+    images: np.ndarray, shapes: Set[Tuple[int, int]], batch_size: int = 16
+) -> Tuple[List[List[np.ndarray]], List[int]]:
     """
     - Input:
         +) images: List images
@@ -17,7 +21,7 @@ def create_batch(images: np.array, shapes: set, batch_size: int = 16):
     images_batch = []
     for shape in shapes:
         mini_batch = []
-        images_mini_batch = []
+        images_mini_batch = []  # type: ignore
         for idx, img in enumerate(images):
             if img.shape == shape:
                 mini_batch.append(idx)
@@ -35,7 +39,7 @@ def create_batch(images: np.array, shapes: set, batch_size: int = 16):
     return images_batch, indices
 
 
-def process_image(img, device="cpu"):
+def process_image(img: np.ndarray, device: str = "cpu") -> np.ndarray:
     height, width = img.shape[:2]
     top = (640 - height) // 2
     bottom = 640 - height - top

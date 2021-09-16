@@ -21,10 +21,26 @@ virtual_env = "venv"
 [tool.mypy]
 python_version = 3.6
 strict = true
-follow_imports = "silent"
+follow_imports = "skip"
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 allow_untyped_defs = true
 allow_incomplete_defs = true
 allow_untyped_calls = true
+
+[[tool.mypy.overrides]]
+module = [
+    "numpy",
+    "torch",
+    "cv2",
+    "gdown"
+]
+ignore_missing_imports = true
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "stamp_processing.module.*"
+ignore_errors = true
+
+

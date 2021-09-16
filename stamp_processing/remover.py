@@ -10,7 +10,9 @@ from stamp_processing.utils import REMOVER_WEIGHT_ID, check_image_shape, downloa
 
 
 class StampRemover:
-    def __init__(self, detection_weight=None, removal_weight=None, device="cpu"):
+    def __init__(
+        self, detection_weight: Union[str, None] = None, removal_weight: Union[str, None] = None, device: str = "cpu"
+    ):
         assert device == "cpu", "Currently only support cpu inference"
 
         if removal_weight is None:
@@ -23,7 +25,7 @@ class StampRemover:
             logger.info(f"Finished downloading. Weight is saved at {removal_weight}")
 
         try:
-            self.remover = UnetInference(removal_weight)
+            self.remover = UnetInference(removal_weight)  # type: ignore
         except Exception as e:
             logger.error(e)
             logger.error("There is something wrong when loading detector weight")
@@ -37,7 +39,7 @@ class StampRemover:
         self.detector = StampDetector(detection_weight, device=device)
         self.padding = 3
 
-    def __call__(self, image_list: Union[List[np.ndarray], np.ndarray], batch_size=16) -> List[np.ndarray]:
+    def __call__(self, image_list: Union[List[np.ndarray], np.ndarray], batch_size: int = 16) -> List[np.ndarray]:
         """
         Detect and remove stamps from document images
         Args:
@@ -54,9 +56,9 @@ class StampRemover:
             check_image_shape(image_list[0])
         else:
             return []
-        return self.__batch_removing(image_list, batch_size)
+        return self.__batch_removing(image_list, batch_size)  # type:ignore
 
-    def __batch_removing(self, image_list, batch_size=16):
+    def __batch_removing(self, image_list, batch_size=16):  # type: ignore
         new_pages = []
 
         shapes = set(list(x.shape for x in image_list))
@@ -65,7 +67,7 @@ class StampRemover:
         detection_predictions = []
         for batch in images_batch:
             if len(batch):
-                detection_predictions.extend(self.detector.detect(batch))
+                detection_predictions.extend(self.detector.detect(batch))  # type:ignore
         z = zip(detection_predictions, indices)
         sorted_result = sorted(z, key=lambda x: x[1])
         detection_predictions, _ = zip(*sorted_result)
@@ -78,8 +80,8 @@ class StampRemover:
                     max(y_min - self.padding, 0) : min(y_max + self.padding, h),
                     max(x_min - self.padding, 0) : min(x_max + self.padding, w),
                 ]
+                stamp_area = self.remover([stamp_area])  # type:ignore
 
-                stamp_area = self.remover([stamp_area])
                 page_img[
                     max(y_min - self.padding, 0) : min(y_max + self.padding, h),
                     max(x_min - self.padding, 0) : min(x_max + self.padding, w),

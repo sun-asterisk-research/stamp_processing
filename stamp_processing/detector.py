@@ -19,7 +19,9 @@ from stamp_processing.utils import (
 
 
 class StampDetector:
-    def __init__(self, model_path=None, device="cpu", conf_thres=0.3, iou_thres=0.3):
+    def __init__(
+        self, model_path: Union[str, None] = None, device: str = "cpu", conf_thres: float = 0.3, iou_thres: float = 0.3
+    ) -> None:
         assert device == "cpu", "Currently only support cpu inference"
 
         if model_path is None:
@@ -70,26 +72,28 @@ class StampDetector:
             check_image_shape(image_list[0])
         else:
             return []
-        return self.detect(image_list)
+        return self.detect(image_list)  # type: ignore
 
-    def detect(self, image_list):
+    def detect(self, image_list):  # type: ignore
 
         batches, indices = create_batch(image_list, set(list(x.shape for x in image_list)))
         predictions = []
 
         for origin_images in batches:
-            images = [letterbox(x, 640, stride=32)[0] for x in origin_images]
+            images = [letterbox(x, 640, stride=32)[0] for x in origin_images]  # type: ignore
             images = list(map(self.process_func_, images))
             tensor = torch.stack(images)
 
             with torch.no_grad():
-                pred = self.model(tensor)[0]
+                pred = self.model(tensor)[0]  # type: ignore
             all_boxes = []
-            pred = non_max_suppression(pred, 0.3, 0.30, classes=0, agnostic=1)
+            pred = non_max_suppression(pred, 0.3, 0.30, classes=0, agnostic=1)  # type: ignore
 
             for idx, det in enumerate(pred):
                 if len(det):
-                    det[:, :4] = scale_coords(images[idx].shape[1:], det[:, :4], origin_images[0].shape).round()
+                    det[:, :4] = scale_coords(
+                        images[idx].shape[1:], det[:, :4], origin_images[0].shape
+                    ).round()  # type:ignore
                     det = det[:, :4]
                     all_boxes.append(det.cpu().numpy().astype("int").tolist())
                 else:
