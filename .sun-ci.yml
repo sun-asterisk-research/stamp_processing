@@ -43,7 +43,7 @@ jobs:
     image: python:3.7
     script:
       - python3 setup.py develop
-      - pip3 install coverage==5.5
+      - pip3 install coverage==5.5 opencv-python-headless==4.5.3.56
       - coverage run --source stamp_processing -m unittest discover tests
       - coverage xml
       - coverage html
