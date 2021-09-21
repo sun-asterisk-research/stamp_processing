@@ -2,9 +2,10 @@ import os
 from typing import List, Union
 
 import numpy as np
+import numpy.typing as npt
 
 from stamp_processing.detector import StampDetector
-from stamp_processing.module.unet import UnetInference
+from stamp_processing.module.unet import *
 from stamp_processing.preprocess import create_batch
 from stamp_processing.utils import REMOVER_WEIGHT_ID, check_image_shape, download_weight, logger
 
@@ -30,7 +31,7 @@ class StampRemover:
             self.remover = UnetInference(removal_weight)  # type: ignore
         except Exception as e:
             logger.error(e)
-            logger.error("There is something wrong when loading detector weight")
+            logger.error("There is something wrong when loading remover weight")
             logger.error(
                 "Please make sure you provide the correct path to the weight"
                 "or mannually download the weight at"
@@ -41,11 +42,11 @@ class StampRemover:
         self.detector = StampDetector(detection_weight, device=device)
         self.padding = 3
 
-    def __call__(self, image_list: Union[List[np.ndarray], np.ndarray], batch_size: int = 16) -> List[np.ndarray]:
+    def __call__(self, image_list: Union[List[npt.NDArray], npt.NDArray], batch_size: int = 16) -> List[npt.NDArray]:
         """Detect and remove stamps from document images
 
         Args:
-            image_list (List[np.ndarray]): list of input images
+            image_list (Union[List[npt.NDArray], npt.NDArray]): list of input images
             batch_size (int, optional): Defaults to 16.
 
         Returns:
@@ -69,7 +70,7 @@ class StampRemover:
         detection_predictions = []
         for batch in images_batch:
             if len(batch):
-                detection_predictions.extend(self.detector.detect(batch))  # type:ignore
+                detection_predictions.extend(self.detector(batch))
         z = zip(detection_predictions, indices)
         sorted_result = sorted(z, key=lambda x: x[1])
         detection_predictions, _ = zip(*sorted_result)

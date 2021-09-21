@@ -3,6 +3,7 @@ from functools import partial
 from typing import List, Union
 
 import numpy as np
+import numpy.typing as npt
 import torch
 
 from stamp_processing.module.yolov5.utils.datasets import letterbox
@@ -55,12 +56,12 @@ class StampDetector:
 
         self.process_func_ = partial(process_image, device=self.device)
 
-    def __call__(self, image_list: Union[List[np.ndarray], np.ndarray]) -> List[np.ndarray]:
+    def __call__(self, image_list: Union[List[npt.NDArray], npt.NDArray]) -> List[npt.NDArray]:
         """Returns a list of bounding boxes [xmin, ymin, xmax, ymax] for each image in image_list
         Each element in the list is a numpy array of shape N x 4
 
         Args:
-            image_list (List[np.array]): input images
+            image_list (Union[List[npt.NDArray], npt.NDArray]): input images
 
         Returns:
             [List[np.ndarray]]: output bounding boxes
@@ -88,7 +89,7 @@ class StampDetector:
             tensor = torch.stack(images)
 
             with torch.no_grad():
-                pred = self.model(tensor)[0]  # type: ignore
+                pred = self.model(tensor)[0]
             all_boxes = []
             pred = non_max_suppression(pred, 0.3, 0.30, classes=0, agnostic=1)  # type: ignore
 

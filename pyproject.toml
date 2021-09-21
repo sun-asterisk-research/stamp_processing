@@ -36,6 +36,10 @@ allow_incomplete_defs = true
 allow_untyped_calls = true
 
 [[tool.mypy.overrides]]
+module = "stamp_processing.module.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
 module = [
     "numpy",
     "torch",
@@ -45,8 +49,6 @@ module = [
 ignore_missing_imports = true
 ignore_errors = true
 
-[[tool.mypy.overrides]]
-module = "stamp_processing.module.*"
-ignore_errors = true
+
 
 

@@ -3,6 +3,7 @@ from typing import Tuple, Union
 
 import gdown
 import numpy as np
+import numpy.typing as npt
 import torch
 from torch import device as torch_device
 from torch.nn import Module
@@ -15,7 +16,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 DETECTOR_WEIGHT_ID = "1YHH7pLoZEdyxw2AoLz9G4lrq6uuxweYB"
-REMOVER_WEIGHT_ID = "1fQGVnatgHcMTmOxswqhE-vqoF_beovs1"
+REMOVER_WEIGHT_ID = "1Hd79M8DhCwjFuT198R-QB7ozQbHRGcGM"
 
 
 def select_device(device: str = "") -> torch_device:
@@ -46,7 +47,7 @@ def download_weight(file_id: str, output: Union[str, None] = None, quiet: bool =
         )
 
 
-def check_image_shape(image: np.ndarray) -> None:
+def check_image_shape(image: npt.NDArray) -> None:
     """Check if input image is valid"""
     if not isinstance(image, np.ndarray):
         raise TypeError("Invalid Type: List value must be of type np.ndarray")

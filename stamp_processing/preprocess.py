@@ -2,12 +2,13 @@ from typing import List, Set, Tuple
 
 import cv2
 import numpy as np
+import numpy.typing as npt
 import torch
 
 
 def create_batch(
-    images: np.ndarray, shapes: Set[Tuple[int, int]], batch_size: int = 16
-) -> Tuple[List[List[np.ndarray]], List[int]]:
+    images: npt.NDArray, shapes: Set[Tuple[int, int]], batch_size: int = 16
+) -> Tuple[List[List[npt.NDArray]], List[int]]:
     """
     - Input:
         +) images: List images
@@ -39,15 +40,15 @@ def create_batch(
     return images_batch, indices
 
 
-def process_image(img: np.ndarray, device: str = "cpu") -> np.ndarray:
+def process_image(img: npt.NDArray, device: str = "cpu") -> npt.NDArray:
     """Preprocess function for yolov5
 
     Args:
-        img (np.ndarray): Input image
+        img (npt.NDArray): Input image
         device (str, optional): torch device. Defaults to "cpu".
 
     Returns:
-        np.ndarray: preprocessed image
+        npt.NDArray: preprocessed image
     """
     height, width = img.shape[:2]
     top = (640 - height) // 2

@@ -14,7 +14,6 @@ INSTALL_REQUIRES = [
     "gdown==3.12.2",
     "opencv_python>=4.1.2.30",
     "torchvision==0.9.1",
-    "torch==1.8.1",
     "fastai==2.3.1",
     "numpy>=1.18.5",
     "PyYAML==5.4.1",
