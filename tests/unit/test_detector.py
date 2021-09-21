@@ -54,3 +54,6 @@ class DetectorTestCase(unittest.TestCase):
             StampDetector(None, "cpu")
             download_weight_mock.assert_called_once()
             load_yolo_model_mock.assert_called_once()
+
+if __name__ == "__main__":
+    unittest.main()

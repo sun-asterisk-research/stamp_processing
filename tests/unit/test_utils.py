@@ -43,3 +43,6 @@ class UtilsTestCase(unittest.TestCase):
     def test_check_image_has_wrong_dimensional_number(self):
         invalid_image = np.random.randint(255, size=(900, 800, 4), dtype=np.uint8)
         self.assertRaises(ValueError, check_image_shape, invalid_image)
+
+if __name__ == "__main__":
+    unittest.main()

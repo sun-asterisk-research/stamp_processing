@@ -26,3 +26,6 @@ class PreprocessTestCase(unittest.TestCase):
         self.assertFalse(output.is_cuda)
         self.assertListEqual(list(output.shape), [3, 640, 640])
         self.assertTrue(output.dtype == torch.float32)
+
+if __name__ == "__main__":
+    unittest.main()
