@@ -3,16 +3,20 @@
 Created on  
 @author: Sun* AI Research Team
 """
+import sys
 
 from setuptools import find_packages, setup
 
+assert sys.version_info >= (3, 7, 0), "stamp_processing requires Python 3.7+"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 INSTALL_REQUIRES = [
-    "gdown==3.12.2",
-    "opencv_python>=4.1.2.30",
+    "gdown",
+    "Pillow<=8.2.0"
+    "opencv-python>=4.1.2.30",
+    "torch==1.8.1",
     "torchvision==0.9.1",
     "fastai==2.3.1",
     "numpy>=1.18.5",
@@ -20,7 +24,6 @@ INSTALL_REQUIRES = [
 ]
 
 DISTNAME = "stamp_processing"
-VERSION = "0.0.1"
 DESCRIPTION = "Stamp processing package"
 AUTHOR = "Sun* AI Research Team"
 EMAIL = "sun.converter.team@gmail.com"
@@ -50,7 +53,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     packages=find_packages(where=".", exclude=["tests"]),
-    python_requires=">=3.6",
-    zip_safe=False,
     install_requires=INSTALL_REQUIRES,
+    python_requires=">=3.7",
+    include_package_data=True
 )
