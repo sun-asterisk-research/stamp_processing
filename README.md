@@ -5,7 +5,7 @@
  This package uses  [Yolov5](https://github.com/ultralytics/yolov5) for the stamp detection model and [fastai](https://github.com/fastai/fastai) Unet for stamp removal model
 
  ## Install
- Due to the requirements of the used libraries, table-reconstruction requires version 3.7 or higher.
+ Due to the requirements of the used libraries, stamp-processing requires version 3.7 or higher.
 
  `stamp-processing` is published on [Pypi](https://pypi.org/project/stamp-processing/). To install the package, use `pip`:
 
