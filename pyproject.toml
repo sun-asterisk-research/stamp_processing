@@ -1,0 +1,54 @@
+[build-system]
+# These are the assumed default build requirements from pip:
+# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
+requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 120
+exclude = '''
+/(
+      \.eggs
+    | \.git
+    | \.mypy_cache
+    | venv
+  )/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+lines_after_imports = 2
+skip_gitignore = true
+virtual_env = "venv"
+
+[tool.mypy]
+python_version = 3.6
+strict = true
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_untyped_defs = true
+allow_incomplete_defs = true
+allow_untyped_calls = true
+
+[[tool.mypy.overrides]]
+module = "stamp_processing.module.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "numpy",
+    "torch",
+    "cv2",
+    "gdown"
+]
+ignore_missing_imports = true
+ignore_errors = true
+
+
+
+

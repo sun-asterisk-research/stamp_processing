@@ -1,0 +1,78 @@
+checkout:
+  depth: 1
+
+stages:
+  - ci
+  - test
+  - build package
+jobs:
+  flake8:
+    stage: ci
+    image: python:3.7
+    script:
+      - pip3 install flake8==3.9.0
+      - flake8 stamp_processing/
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+
+  isort:
+    stage: ci
+    image: python:3.7
+    script:
+      - pip3 install isort==5.8.0
+      - isort stamp_processing/ -c
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+
+  mypy:
+    stage: ci
+    image: python:3.7
+    script:
+      - pip3 install mypy
+      - python3 setup.py develop
+      - mypy stamp_processing --install-types --non-interactive --ignore-missing-imports
+    allow_failure: true
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+
+  unittest:
+    stage: test
+    image: python:3.7
+    script:
+      - python3 setup.py develop
+      - pip3 install coverage==5.5 opencv-python-headless==4.5.3.56
+      - coverage run --source stamp_processing -m unittest discover tests
+      - coverage xml
+      - coverage html
+    coverage:
+      type: cobertura
+      path: coverage.xml
+    artifacts:
+      name: coverage
+      paths:
+        - htmlcov
+      expires_in: 3 days
+    except:
+      messages:
+        - '/\[ci skip ci\]/'
+  build:
+    stage: build package
+    image: python:3
+    script:
+      - python3 setup.py bdist_wheel sdist
+      - pip3 install twine
+      - python3 -m twine upload dist/* --repository stamp_processing --verbose -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} --repository-url https://upload.pypi.org/legacy/ --non-interactive
+    artifacts:
+      name: dist
+      paths:
+        - dist
+      expires_in: 14 days
+
+    only:
+      branches:
+        - master
+      events:
+        - push
