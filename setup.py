@@ -19,7 +19,7 @@ INSTALL_REQUIRES = [
     "torch==1.8.1",
     "torchvision==0.9.1",
     "fastai==2.3.1",
-    "numpy>=1.18.5",
+    "numpy>=1.20",
     "PyYAML==5.4.1",
 ]
 
