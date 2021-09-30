@@ -1,5 +1,5 @@
 checkout:
-  depth: 1
+  depth: 10
 
 stages:
   - ci
