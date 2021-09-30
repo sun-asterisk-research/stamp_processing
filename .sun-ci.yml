@@ -4,7 +4,7 @@ checkout:
 stages:
   - ci
   - test
-
+  - build package
 jobs:
   flake8:
     stage: ci
@@ -58,3 +58,21 @@ jobs:
     except:
       messages:
         - '/\[ci skip ci\]/'
+  build:
+    stage: build package
+    image: python:3
+    script:
+      - python3 setup.py bdist_wheel sdist
+      - pip3 install twine
+      - python3 -m twine upload dist/* --repository stamp_processing --verbose -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} --repository-url https://upload.pypi.org/legacy/ --non-interactive
+    artifacts:
+      name: dist
+      paths:
+        - dist
+      expires_in: 14 days
+
+    only:
+      branches:
+        - master
+      events:
+        - push
