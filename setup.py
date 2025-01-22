@@ -14,7 +14,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 INSTALL_REQUIRES = [
     "gdown",
-    "Pillow<=8.2.0"
+    "Pillow<=8.2.0",
     "opencv-python>=4.1.2.30",
     "torch==1.8.1",
     "torchvision==0.9.1",
